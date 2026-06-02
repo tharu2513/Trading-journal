@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `admins` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
 
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `balance_history` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `balance_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
 
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS `chart_shares` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `chart_shares_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
 
@@ -137,14 +137,14 @@ CREATE TABLE IF NOT EXISTS `meetings` (
   `meeting_password` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `scheduled_at` datetime NOT NULL,
   `duration_minutes` int DEFAULT '60',
-  `status` enum('upcoming','live','completed','cancelled','inactive','active') COLLATE utf8mb4_unicode_ci DEFAULT 'upcoming',
+  `status` enum('upcoming','live','completed','cancelled','inactive','active') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'upcoming',
   `created_by` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `created_by` (`created_by`),
+  KEY `meetings_ibfk_1` (`created_by`),
   CONSTRAINT `meetings_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
 
@@ -157,10 +157,10 @@ CREATE TABLE IF NOT EXISTS `meeting_attendance` (
   `marked_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_user_meeting` (`meeting_id`,`user_id`),
-  KEY `user_id` (`user_id`),
+  KEY `meeting_attendance_ibfk_2` (`user_id`),
   CONSTRAINT `meeting_attendance_ibfk_1` FOREIGN KEY (`meeting_id`) REFERENCES `meetings` (`id`) ON DELETE CASCADE,
   CONSTRAINT `meeting_attendance_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
 
@@ -193,6 +193,7 @@ CREATE TABLE IF NOT EXISTS `stock_symbols` (
 CREATE TABLE IF NOT EXISTS `trades` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
+  `market_type` enum('crypto','forex','stocks') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'crypto',
   `coin_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `coin_symbol` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
   `exchange_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -202,9 +203,11 @@ CREATE TABLE IF NOT EXISTS `trades` (
   `stop_loss` decimal(20,8) DEFAULT NULL,
   `take_profit` decimal(20,8) DEFAULT NULL,
   `position_size` decimal(15,4) NOT NULL,
+  `lot_size` decimal(10,4) DEFAULT NULL,
   `leverage` int DEFAULT '1',
   `pnl` decimal(15,2) DEFAULT NULL,
   `pnl_percentage` decimal(8,2) DEFAULT NULL,
+  `pip_gain` decimal(10,2) DEFAULT NULL,
   `fees` decimal(10,2) DEFAULT '0.00',
   `status` enum('open','closed','cancelled') COLLATE utf8mb4_unicode_ci DEFAULT 'open',
   `result` enum('win','loss','breakeven') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -217,7 +220,7 @@ CREATE TABLE IF NOT EXISTS `trades` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `trades_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
 
@@ -252,7 +255,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
 
@@ -269,7 +272,7 @@ CREATE TABLE IF NOT EXISTS `user_settings` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `user_settings_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
 
